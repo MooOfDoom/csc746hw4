@@ -56,7 +56,7 @@ target_compile_features(benchmark-blas PRIVATE c_std_11 c_restrict)
 target_compile_options(benchmark-blas PRIVATE -Wall -pedantic -march=native)
 set(BENCHMARK "blas")
 configure_file(job-cblas.in job-${BENCHMARK})
-configure_file(job-bcblas-test.in job-${BENCHMARK}-test)
+configure_file(job-cblas-test.in job-${BENCHMARK}-test)
 
 add_executable(benchmark-blocked-omp dgemm-blocked-omp.cpp)
 add_library(bench-blocked-omp OBJECT benchmark.cpp)
