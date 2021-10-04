@@ -18,6 +18,7 @@ void square_dgemm(int n, double* A, double* B, double* C)
    // but before your matrix multiply code, and then include LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME)
    // after the matrix multiply code but before the end of the parallel code block.
    // implementation of basic matrix multiply
+   
    #pragma omp parallel
    {
 #ifdef LIKWID_PERFMON
@@ -37,5 +38,27 @@ void square_dgemm(int n, double* A, double* B, double* C)
 #ifdef LIKWID_PERFMON
       LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
 #endif
+   }
+}
+
+/*
+ * Used to warmup the unit, so we measure typical timings, not including
+ * one time initialization.
+ */
+void square_dgemm_warmup(int n, double* A, double* B, double* C)
+{
+   #pragma omp parallel
+   {
+      #pragma omp for
+      for (int j = 0; j < n; ++j)
+      {
+         for (int k = 0; k < n; ++k)
+         {
+            for (int i = 0; i < n; ++i)
+            {
+               C[j*n + i] += A[k*n + i]*B[j*n + k];
+            }
+         }
+      }
    }
 }

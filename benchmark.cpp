@@ -33,7 +33,9 @@
 
 // external definitions for mmul's
 extern void square_dgemm(int, double*, double*, double*);
-extern void square_dgemm_blocked(int, int, double*, double*, double*) ;
+extern void square_dgemm_warmup(int, double*, double*, double*);
+extern void square_dgemm_blocked(int, int, double*, double*, double*);
+extern void square_dgemm_blocked_warmup(int, int, double*, double*, double*);
 extern const char* dgemm_desc;
 
 void reference_dgemm(int n, double alpha, double* A, double* B, double* C) {
@@ -140,7 +142,52 @@ int main(int argc, char** argv)
          block_sizes.push_back(i);
    }
 #endif
+   
+   //
+   // Warmup
+   //
+   
+   {
+      int n = 64;
+      // allocate memory for 6 NxN matrics
+      std::vector<double> buf(6 * n * n);
+      double* A = buf.data() + 0;
+      double* B = A + n * n;
+      double* C = B + n * n;
+      double* Acopy = C + n * n;
+      double* Bcopy = Acopy + n * n;
+      double* Ccopy = Bcopy + n * n;
 
+      // load up matrics with some random numbers
+      fill(A, n * n);
+      fill(B, n * n);
+      fill(C, n * n);
+
+      // make copies of A, B, C for use in verification of results
+      memcpy((void *)Acopy, (const void *)A, sizeof(double)*n*n);
+      memcpy((void *)Bcopy, (const void *)B, sizeof(double)*n*n);
+      memcpy((void *)Ccopy, (const void *)C, sizeof(double)*n*n);
+
+      // insert timer code here
+      std::chrono::time_point<std::chrono::high_resolution_clock> start_time = std::chrono::high_resolution_clock::now();
+
+#ifdef BLOCKED
+      int b = 16;
+      square_dgemm_blocked_warmup(n, b, A, B, C); 
+#else
+      square_dgemm_warmup(n, A, B, C); 
+#endif
+
+      // insert timer code here
+      std::chrono::time_point<std::chrono::high_resolution_clock> end_time = std::chrono::high_resolution_clock::now();
+
+      std::chrono::duration<double> elapsed = end_time - start_time;
+
+      std::cout << " Warmup time is : " << elapsed.count() << " (sec) " << std::endl;
+
+      reference_dgemm(n, 1.0 , Acopy, Bcopy, Ccopy);
+   }
+   
    /* For each test size */
    for (int n : test_sizes) 
    {

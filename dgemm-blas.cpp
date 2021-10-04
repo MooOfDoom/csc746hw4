@@ -15,11 +15,19 @@ const char* dgemm_desc = "Reference dgemm.";
 void square_dgemm(int n, double* A, double* B, double* C) {
 
 #ifdef LIKWID_PERFMON
-      LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
+    LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
 #endif
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1., A, n, B, n, 1., C, n);
 #ifdef LIKWID_PERFMON
-      LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
+    LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
 #endif
 
+}
+
+/*
+ * Used to warmup the unit, so we measure typical timings, not including
+ * one time initialization.
+ */
+void square_dgemm_warmup(int n, double* A, double* B, double* C) {
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1., A, n, B, n, 1., C, n);
 }
