@@ -184,8 +184,6 @@ int main(int argc, char** argv)
       std::chrono::duration<double> elapsed = end_time - start_time;
 
       std::cout << " Warmup time is : " << elapsed.count() << " (sec) " << std::endl;
-
-      reference_dgemm(n, 1.0 , Acopy, Bcopy, Ccopy);
    }
    
    /* For each test size */
