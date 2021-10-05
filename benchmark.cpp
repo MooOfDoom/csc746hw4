@@ -203,7 +203,7 @@ int main(int argc, char** argv)
 
          // allocate memory for 6 NxN matrics
          std::vector<double> buf(6 * n * n + 8); // 8 extra doubles for alignment
-         double* A = (double *)align(64, sizeof(double), buf.data(), sizeof(double) * (6 * n * n + 8));
+         double* A = (double *)std::align(64, sizeof(double), buf.data(), sizeof(double) * (6 * n * n + 8));
          double* B = A + n * n;
          double* C = B + n * n;
          double* Acopy = C + n * n;
