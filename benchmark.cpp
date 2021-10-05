@@ -205,7 +205,7 @@ int main(int argc, char** argv)
          size_t num_doubles = 6 * n * n + 8;
          std::vector<double> buf(num_doubles); // 8 extra doubles for alignment
          size_t alloc_size = sizeof(double)*num_doubles;
-         double* buf_start = buf.data();
+         void* buf_start = (void*)buf.data();
          double* A = (double *)std::align(64, sizeof(double), buf_start, alloc_size);
          double* B = A + n * n;
          double* C = B + n * n;
