@@ -101,7 +101,7 @@ void square_dgemm_blocked_warmup(int n, int block_size, double* A, double* B, do
       double* c_block = new double[block_size*block_size];
       
       int n_blocks = n / block_size;
-      #pragma omp for
+      #pragma omp for collapse(2)
       for (int block_i = 0; block_i < n_blocks; ++ block_i)
       {
          for (int block_j = 0; block_j < n_blocks; ++block_j)
