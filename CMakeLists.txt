@@ -44,6 +44,7 @@ target_compile_options(benchmark-basic-omp PRIVATE -fopenmp -Wall -pedantic -mar
 set(BENCHMARK "basic-omp")
 configure_file(job-basic-omp.in job-${BENCHMARK})
 configure_file(job-basic-omp-test.in job-${BENCHMARK}-test)
+configure_file(job-basic-omp-noperf.in job-${BENCHMARK}-noperf)
 
 add_executable(benchmark-blas dgemm-blas.cpp)
 target_link_libraries(benchmark-blas PRIVATE benchmark ${BLAS_LIBRARIES})
@@ -57,6 +58,7 @@ target_compile_options(benchmark-blas PRIVATE -Wall -pedantic -march=native)
 set(BENCHMARK "blas")
 configure_file(job-cblas.in job-${BENCHMARK})
 configure_file(job-cblas-test.in job-${BENCHMARK}-test)
+configure_file(job-cblas-noperf.in job-${BENCHMARK}-noperf)
 
 add_executable(benchmark-blocked-omp dgemm-blocked-omp.cpp)
 add_library(bench-blocked-omp OBJECT benchmark.cpp)
@@ -77,4 +79,5 @@ target_compile_options(benchmark-blocked-omp PRIVATE -fopenmp -Wall -pedantic -m
 set(BENCHMARK "blocked-omp")
 configure_file(job-blocked-omp.in job-${BENCHMARK})
 configure_file(job-blocked-omp-test.in job-${BENCHMARK}-test)
+configure_file(job-blocked-omp-noperf.in job-${BENCHMARK}-noperf)
 
