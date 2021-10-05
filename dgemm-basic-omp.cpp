@@ -24,8 +24,11 @@ void square_dgemm(int n, double* A, double* B, double* C)
 #ifdef LIKWID_PERFMON
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
 #endif
-      #pragma omp for
-      for (int j = 0; j < n; ++j)
+      int nthreads = omp_get_num_threads();
+      int thread_id = omp_get_thread_num();
+      int total = n/nthreads;
+      int end = total*(thread_id + 1);
+      for (int j = total*thread_id; j < end; ++j)
       {
          for (int k = 0; k < n; ++k)
          {
