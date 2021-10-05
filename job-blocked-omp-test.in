@@ -5,9 +5,9 @@
 #SBATCH --nodes=1
 #SBATCH --time=00:04:00
 #SBATCH --cpu-freq=1400000
-#SBATCH --job-name=job-@BENCHMARK@
-#SBATCH --output=job-@BENCHMARK@.o%j
-#SBATCH --error=job-@BENCHMARK@.e%j
+#SBATCH --job-name=job-@BENCHMARK@-test
+#SBATCH --output=job-@BENCHMARK@-test.o%j
+#SBATCH --error=job-@BENCHMARK@-test.e%j
 
 # set some openmp variables: 
 # OMP_PLACES=threads maps OpenMP threads to hardware threads
