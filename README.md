@@ -27,19 +27,27 @@ module:
 * module load likwid-5.2.0   # on the VM
 
 
-# Build instructions - general
+# Build instructions - Cori
+
+When building on Cori, make sure you are on a KNL node when doing the compilation. The
+Cori login nodes are *not* KNL nodes, the Cori login nodes have Intel Xeon E5-2698
+processors, not the Intel Xeon Phi 7250 processors.  The simplest way to do this is
+grab an interactive KNL node:
+
+% salloc --nodes 1 --qos interactive --time 01:00:00 --constraint knl --perf likwid --account m3930
+
+Load the correct environment modules:
+
+% module swap PrgEnv-intel PrgEnv-gnu
+% module load cmake
+% module load likwid/5.2.0
 
 After downloading, cd into the main source directly, then:
 
 % mkdir build  
 % cd build  
 % cmake ../  -Wno-dev
-
-When building on Cori, make sure you are on a KNL node when doing the compilation. The
-Cori login nodes are *not* KNL nodes, the Cori login nodes have Intel Xeon E5-2698
-processors, not the Intel Xeon Phi 7250 processors.  The simplest way to do this is
-grab an interactive KNL node:
-salloc --nodes 1 --qos interactive --time 01:00:00 --constraint knl --account m3930
+% make
 
 # Platforms
 
@@ -51,17 +59,6 @@ runs will fail.
 
 Other Linux platforms are possible, but you are on your own to get LIKWID installed,
 built, and working.
-
-# Adding your code
-
-For matrix multiplication:
-
-There are stub routines inside degemm-basic-omp.cpp and dgemm-blocked-omp.cpp where you can
-add your code for doing OpenMP-enabled basic and blocked matrix multiply, respectively.
-
-For blocked matrix multiply, in this implementation, the block size is being passed in as
-a parameter from the main benchmark.cpp code. You should write your blocked matrix multiply
-with the block size parameterized in this fashion (rather than being a hard-coded thing). 
 
 # Changes to benchmark.cpp from HW2
 
@@ -106,7 +103,7 @@ line, which is handy for scripting up the test suite.
 # Running the benchmarks
 
 When you run cmake, it generates three bash script files that you may use on Cori to
-run the test battery for HW4. Some will require some modifications and customizations:
+run the test battery for HW4.
 
 ## Requesting specific  hardware performance counters
 
@@ -120,16 +117,32 @@ If you want to collect different hardware performance counters, replace HBM_CACH
 name of the performance counter group you want to collect. likwid-perfctr -a will give
 you a list of all the supported performance counter groups on the platform.
 
-##  Problem configuration loops
+##  Running the codes
 
-* job-basic-omp : requires no modification, this one will run over the problem sizes and
-OpenMP concurrency levels requested by HW4.
+After running cmake, the job scripts should already be setup as needed. 
 
-* job-blas : will require modification to change the loop over thread concurrency. After
-running cmake, look inside job-blas for more details.
+* job-basic-omp : will run Basic MM over the problem sizes and OpenMP concurrency levels requested by HW4.
 
-* job-blocked-openmp: requires 2 modifications to enable the loop over block sizes and
-to pass the block size argument in to the benckmark-blocked-omp program. After running
-cmake, look insize job-blocked-omp for more details.
+* job-blas : will run CBLAS over the problem sizes requested by HW4.
+
+* job-blocked-omp: will run BMMCO over the problem sizes, block sizes, and OpenMP concurrency levels requested by HW4.
+
+* job-basic-omp-test : will run Basic MM over one problem size and OpenMP concurrency level.
+
+* job-blas-test : will run CBLAS over one problem size.
+
+* job-blocked-omp-test : will run BMMCO over one problem size, block size, and OpenMP concurrency level. 
+
+* job-basic-omp-noperf : will run Basic MM over the problem sizes and OpenMP concurrency levels requested by HW4 without likwid-perfctr.
+
+* job-blas-noperf : will run CBLAS over the problem sizes requested by HW4 without likwid-perfctr.
+
+* job-blocked-omp-noperf: will run BMMCO over the problem sizes, block sizes, and OpenMP concurrency levels requested by HW4 without likwid-perfctr.
+
+The job files can be run with (for instance)
+
+% sbatch -t 30 job-basic-omp
+
+to request up to 30 minutes of run time. The job will run and write its timing output to job--basic-omp.oXXXXXXXX, where XXXXXXXX is the job number that was assigned by the sbatch.
 
 #eof
