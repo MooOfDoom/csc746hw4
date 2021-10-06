@@ -143,6 +143,6 @@ The job files can be run with (for instance)
 
 % sbatch -t 30 job-basic-omp
 
-to request up to 30 minutes of run time. The job will run and write its timing output to job--basic-omp.oXXXXXXXX, where XXXXXXXX is the job number that was assigned by the sbatch.
+to request up to 30 minutes of run time. The job will run and write its timing output to job-basic-omp.oXXXXXXXX, where XXXXXXXX is the job number that was assigned by the sbatch.
 
 #eof
