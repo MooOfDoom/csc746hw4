@@ -38,15 +38,15 @@ grab an interactive KNL node:
 
 Load the correct environment modules:
 
-% module swap PrgEnv-intel PrgEnv-gnu 
-% module load cmake 
-% module load likwid/5.2.0 
+% module swap PrgEnv-intel PrgEnv-gnu  
+% module load cmake  
+% module load likwid/5.2.0  
 
 After downloading, cd into the main source directly, then:
 
 % mkdir build  
 % cd build  
-% cmake ../  -Wno-dev
+% cmake ../  -Wno-dev  
 % make 
 
 # Platforms
